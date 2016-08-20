@@ -3,9 +3,11 @@ window.addEventListener('resize', resizeCanvas, false);
 function resizeCanvas() {
     //draw canvas    
     var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");      canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;   
-
+    var context = canvas.getContext("2d");      
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    //draw court
     var drawBoard = function(w,h,border,fill){
         var centerX = canvas.width / 2;
         var centerY = canvas.height / 2;
@@ -74,9 +76,9 @@ function resizeCanvas() {
         };
         var ball = new Ball(); 
         
-        function renderObjects(){
+        function renderObjects() {
             for (var i = 0; i < arguments.length; i++) {
-                i.render;
+                arguments[i].render();
             }
         };
         renderObjects(computer, player, ball);
