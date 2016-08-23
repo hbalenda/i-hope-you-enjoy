@@ -63,17 +63,16 @@ function resizeCanvas() {
     Paddle.prototype = {
         render: function(){
             context.beginPath();
-            context.fillStyle = '#F3F3F5'; 
-            context.fillRect(this.xPosition,this.yPosition,this.width,this.height);
+            context.fillStyle = '#F3F3F5';  context.fillRect(this.xPosition,this.yPosition,this.width,this.height);
         },
         speed: 10,
         move: function(key){
             if(key.keyCode == 38) {
-                if((this.yPosition -= this.speed) >= (centerY - boardHeight/2)){
+                if((this.yPosition - this.speed) >= (centerY - boardHeight/2)){
                     this.yPosition -= this.speed;
                 }
             } else if(key.keyCode == 40){
-                if((this.yPosition += this.speed) <= (centerY + boardHeight/2)){
+                if((this.yPosition + +this.height + this.speed) <= (centerY + boardHeight/2)){
                 this.yPosition += this.speed;
                 }
             }
@@ -101,20 +100,48 @@ function resizeCanvas() {
     
     //create ball
     var Ball = function(){
-        this.render = function() {
-            var x = canvas.width / 2;
-            var y = canvas.height / 2;
-            var radius = 5;
-            var startAngle = 0;
-            var endAngle = 2 * Math.PI;
-
-            context.beginPath();
-            context.arc(x, y, radius, startAngle, endAngle);
+        this.xPosition = canvas.width / 2;
+        this.yPosition = canvas.height / 2;
+        this.radius = 5;
+        this.startAngle = 0;
+        this.endAngle = 2 * Math.PI;
+    };
+    // Floor to get rid of decimals
+    // random generates between 0 and 0.9999999999
+    // multiply random by the upper bound (limit)
+    // add the lower bound
+    // Math.floor((Math.random() * 2) + 1)
+    Ball.prototype = {
+        render: function() {
             context.lineWidth = 10;
             context.strokeStyle = '#F3F3F5';
+            context.beginPath();
+            context.arc(this.xPosition, this.yPosition, this.radius, this.startAngle, this.endAngle);
             context.stroke();
-        }
+        },
+        xSpeed: 5,
+        ySpeed: 3,
+        move: function(){
+            if(this.inPlay == true) {
+                //bounce of top and bottom
+                if((this.yPosition + 2*this.radius) >= (centerY + boardHeight/2) || (this.yPosition - 2*this.radius) <= (centerY - boardHeight/2)) {
+                    this.ySpeed = -this.ySpeed;
+                } //stop if goes out of bounds
+                else if((this.xPosition + 2*this.radius) >= (centerX + boardWidth/2) || (this.xPosition - 2*this.radius) <= (centerX - boardWidth/2)) {
+                    this.inPlay = false;
+                } //bounce off paddles
+                else if((player.xPosition == (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition <= (player.yPosition + player.height))){
+                    this.xSpeed = -this.xSpeed;
+                } else if(((computer.xPosition + computer.width) == this.xPosition) && (computer.yPosition <= this.yPosition <= (computer.yPosition + computer.height))){
+                    this.xSpeed = -this.xSpeed;
+                }
+                this.xPosition += this.xSpeed;
+                this.yPosition += this.ySpeed;
+            }
+        },
+        inPlay: false
     };
+    
     var ball = new Ball(); 
 
     var renderObjects = function() {
@@ -134,6 +161,7 @@ function resizeCanvas() {
     var step = function() {
         drawBoard(boardWidth, boardHeight);
         renderObjects(computer, player, ball);
+        ball.move()
         animate(step);
     };
 
@@ -141,6 +169,9 @@ function resizeCanvas() {
 
     window.addEventListener('keydown', function(key){
         player.move(key);
+        if(key.code == "Space") {
+            (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
+        }
     });
 }
 
