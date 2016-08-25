@@ -130,7 +130,7 @@ function resizeCanvas() {
                 else if((this.xPosition + 2*this.radius) >= (centerX + boardWidth/2) || (this.xPosition - 2*this.radius) <= (centerX - boardWidth/2)) {
                     this.inPlay = false;
                 } //bounce off paddles
-                else if((player.xPosition == (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition <= (player.yPosition + player.height))){
+                else if((player.xPosition == (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
                     this.xSpeed = -this.xSpeed;
                 } else if(((computer.xPosition + computer.width) == this.xPosition) && (computer.yPosition <= this.yPosition <= (computer.yPosition + computer.height))){
                     this.xSpeed = -this.xSpeed;
