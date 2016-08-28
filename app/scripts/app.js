@@ -4,7 +4,6 @@ function resizeCanvas() {
     var context = canvas.getContext("2d");      
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     //draw court
 
     var centerX = canvas.width / 2;
@@ -12,6 +11,9 @@ function resizeCanvas() {
     var boardWidth = 1050;
     var boardHeight = 500;
     var drawBoard = function(w,h){
+        //fill lawn
+        context.fillStyle = "#CDE6D5";
+        context.fillRect(centerX - 700, centerY - 350,1400,700);
         //fil court
         context.strokeStyle = "#F3F3F5";
         context.fillStyle = "#FFB8BD";
