@@ -65,25 +65,32 @@ function resizeCanvas() {
             context.beginPath();
             context.fillStyle = '#F3F3F5';  context.fillRect(this.xPosition,this.yPosition,this.width,this.height);
         },
-        speed: 10,
-        move: function(key){
-            if(key.keyCode == 38) {
-                if((this.yPosition - this.speed) >= (centerY - boardHeight/2)){
+        speed: 20,
+        move: function(direction){
+            if(direction == "up") {
+                if((this.yPosition - this.speed) >= (centerY - boardHeight/2 - this.height)){
                     this.yPosition -= this.speed;
                 }
-            } else if(key.keyCode == 40){
-                if((this.yPosition + +this.height + this.speed) <= (centerY + boardHeight/2)){
+            } else if(direction == "down"){
+                if((this.yPosition + this.speed) <= (centerY + boardHeight/2)){
                 this.yPosition += this.speed;
                 }
             }
         }
     };          
 
-    // Create a function for computer paddle and player paddle
-    // that inherits from paddle
     var ComputerPaddle = function(){
         Paddle.call(this);
         this.xPosition = centerX - boardWidth/2 + 10;
+        this.update = function(){
+            if(ball.inPlay){
+                if(ball.yPosition < (this.yPosition + this.height/2)){
+                    this.move("up");
+                } else if (ball.yPosition > (this.yPosition + this.height)){
+                    this.move("down");           
+                }
+            }
+        }
     };
 
     var PlayerPaddle = function(){
@@ -123,7 +130,7 @@ function resizeCanvas() {
         ySpeed: 3,
         move: function(){
             if(this.inPlay == true) {
-                //bounce of top and bottom
+                //bounce off top and bottom
                 if((this.yPosition + 2*this.radius) >= (centerY + boardHeight/2) || (this.yPosition - 2*this.radius) <= (centerY - boardHeight/2)) {
                     this.ySpeed = -this.ySpeed;
                 } //stop if goes out of bounds
@@ -132,7 +139,7 @@ function resizeCanvas() {
                 } //bounce off paddles
                 else if((player.xPosition == (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
                     this.xSpeed = -this.xSpeed;
-                } else if(((computer.xPosition + computer.width) == this.xPosition) && (computer.yPosition <= this.yPosition <= (computer.yPosition + computer.height))){
+                } else if(((computer.xPosition + computer.width) == (this.xPosition - 2*this.radius)) && (computer.yPosition <= this.yPosition <= (computer.yPosition + computer.height))){
                     this.xSpeed = -this.xSpeed;
                 }
                 this.xPosition += this.xSpeed;
@@ -155,7 +162,7 @@ function resizeCanvas() {
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
         window.msRequestAnimationFrame     ||
-        function(callback) { window.setTimeout(callback, 1000/60) 
+        function(callback) { window.setTimeout(callback, 2000/60) 
         };
 
     var step = function() {
@@ -163,14 +170,19 @@ function resizeCanvas() {
         renderObjects(computer, player, ball);
         ball.move()
         animate(step);
+        computer.update();
     };
 
     animate(step);
 
     window.addEventListener('keydown', function(key){
-        player.move(key);
         if(key.code == "Space") {
             (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
+        }
+        if(key.code == "ArrowUp") {
+            player.move("up");
+        } else if(key.code == "ArrowDown") {
+            player.move("down");
         }
     });
 }
