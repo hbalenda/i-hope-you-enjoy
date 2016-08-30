@@ -1,11 +1,11 @@
 function resizeCanvas() {
     //draw canvas    
     var canvas = document.getElementById("canvas");
+    var canvasContext = canvas.getContext("2d");
     var context = canvas.getContext("2d");      
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     //draw court
-
     var centerX = canvas.width / 2;
     var centerY = canvas.height / 2;
     var boardWidth = 1050;
@@ -53,7 +53,12 @@ function resizeCanvas() {
         };
         drawDoubles(centerY - (.357 * h));
         drawDoubles(centerY + (.357 * h));
+        
     }
+    
+    drawBoard(boardWidth, boardHeight);
+
+    var inPlay = false;
     
     //create paddles
     var Paddle = function(){
@@ -65,9 +70,10 @@ function resizeCanvas() {
     Paddle.prototype = {
         render: function(){
             context.beginPath();
-            context.fillStyle = '#F3F3F5';  context.fillRect(this.xPosition,this.yPosition,this.width,this.height);
+            context.fillStyle = '#F3F3F5';  
+            context.fillRect(this.xPosition,this.yPosition,this.width,this.height);
         },
-        speed: 20,
+        speed: 25,
         move: function(direction){
             if(direction == "up") {
                 if((this.yPosition - this.speed) >= (centerY - boardHeight/2 - this.height)){
@@ -78,21 +84,29 @@ function resizeCanvas() {
                 this.yPosition += this.speed;
                 }
             }
-        }
+        },
+        //make this a function that increments score, gets ball ready to be re-served
+        score: 0
+        
     };          
 
     var ComputerPaddle = function(){
         Paddle.call(this);
         this.xPosition = centerX - boardWidth/2 + 10;
         this.update = function(){
-            if(ball.inPlay){
-                if(ball.yPosition < (this.yPosition + this.height/2)){
-                    this.move("up");
-                } else if (ball.yPosition > (this.yPosition + this.height)){
-                    this.move("down");           
+            var roll = Math.floor(Math.random() * 9) + 1;
+            if(roll !== 2) {
+                if(ball.inPlay){
+                    console.log(roll);
+                    if(ball.yPosition < (this.yPosition + this.height/2)){
+                        this.move("up");
+                    } else if (ball.yPosition > (this.yPosition + this.height)){
+                        this.move("down");           
+                    }
                 }
             }
-        }
+        };
+        this.speed = 5;
     };
 
     var PlayerPaddle = function(){
@@ -121,6 +135,7 @@ function resizeCanvas() {
     // add the lower bound
     // Math.floor((Math.random() * 2) + 1)
     Ball.prototype = {
+        inPlay: false,
         render: function() {
             context.lineWidth = 10;
             context.strokeStyle = '#F3F3F5';
@@ -136,19 +151,24 @@ function resizeCanvas() {
                 if((this.yPosition + 2*this.radius) >= (centerY + boardHeight/2) || (this.yPosition - 2*this.radius) <= (centerY - boardHeight/2)) {
                     this.ySpeed = -this.ySpeed;
                 } //stop if goes out of bounds
-                else if((this.xPosition + 2*this.radius) >= (centerX + boardWidth/2) || (this.xPosition - 2*this.radius) <= (centerX - boardWidth/2)) {
-                    this.inPlay = false;
+                else if((this.xPosition + 2*this.radius) >= (centerX + boardWidth/2)){
+                    score(computer);   
+                } else if((this.xPosition - 2*this.radius) <= (centerX - boardWidth/2)) {
+                    score(player);
                 } //bounce off paddles
                 else if((player.xPosition == (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
                     this.xSpeed = -this.xSpeed;
-                } else if(((computer.xPosition + computer.width) == (this.xPosition - 2*this.radius)) && (computer.yPosition <= this.yPosition <= (computer.yPosition + computer.height))){
+                } else if(((computer.xPosition + computer.width) == (this.xPosition - 2*this.radius)) && (computer.yPosition <= this.yPosition && this.yPosition <= (computer.yPosition + computer.height))){
                     this.xSpeed = -this.xSpeed;
                 }
                 this.xPosition += this.xSpeed;
                 this.yPosition += this.ySpeed;
             }
         },
-        inPlay: false
+        reset: function(){
+            this.xPosition = canvas.width / 2;
+            this.yPosition = canvas.height / 2;
+        }
     };
     
     var ball = new Ball(); 
@@ -164,22 +184,30 @@ function resizeCanvas() {
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
         window.msRequestAnimationFrame     ||
-        function(callback) { window.setTimeout(callback, 2000/60) 
+        function(callback) { window.setTimeout(callback, 1000/60) 
         };
 
     var step = function() {
         drawBoard(boardWidth, boardHeight);
         renderObjects(computer, player, ball);
-        ball.move()
+        // if ball is in play
+        ball.move();
         animate(step);
         computer.update();
     };
+    
+    function score(guy) {
+        guy.score += 1;
+        ball.inPlay = false;
+        ball.reset();
+    }
 
     animate(step);
 
     window.addEventListener('keydown', function(key){
         if(key.code == "Space") {
             (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
+            // animate(step)
         }
         if(key.code == "ArrowUp") {
             player.move("up");
