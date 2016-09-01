@@ -97,7 +97,6 @@ function resizeCanvas() {
             var roll = Math.floor(Math.random() * 9) + 1;
             if(roll !== 2) {
                 if(ball.inPlay){
-                    console.log(roll);
                     if(ball.yPosition < (this.yPosition + this.height/2)){
                         this.move("up");
                     } else if (ball.yPosition > (this.yPosition + this.height)){
@@ -196,10 +195,19 @@ function resizeCanvas() {
         computer.update();
     };
     
+    //handle end of round
     function score(guy) {
         guy.score += 1;
         ball.inPlay = false;
         ball.reset();
+    }
+    
+    //update score box
+    var playerScore = document.getElementById("playerScore");
+    var compScore = document.getElementById("compScore");
+    var updateScore = function(){
+        playerScore.innerHTML = player.score;
+        compScore.innerHTML = computer.score;
     }
 
     animate(step);
