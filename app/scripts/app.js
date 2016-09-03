@@ -208,7 +208,6 @@ function drawPlay() {
         }
         if(guy.gamesWon == 3){
             guy.score = "winner!";
-            console.log("GAME OVER");
         }
         
         ball.inPlay = false;
@@ -230,7 +229,11 @@ function drawPlay() {
 
     window.addEventListener('keydown', function(key){
         if(key.code == "Space") {
-            (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
+            if(player.gamesWon == 3 || computer.gamesWon == 3){
+                location.reload();
+            } else {
+                (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
+            }
         }
         if(key.code == "ArrowUp") {
             player.move("up");
