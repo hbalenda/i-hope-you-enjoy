@@ -1,3 +1,5 @@
+@import 'https://fonts.googleapis.com/css?family=Montserrat';
+
 body {
   margin: 0px;
   padding: 0px;
@@ -8,9 +10,30 @@ canvas {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 0;
 }
 
+#score-container {
+    z-index: 1;
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+    text-align:center;
+}
 .scoreBox {
-    
+    z-index: 1;
+    color: #F3F3F5;
+    font-size: 56px;
+    padding: 5% 20%;
+    font-family: "Montserrat";
 }
 
+#playerScore {
+    display: inline-block;
+
+}
+
+#compScore {
+    display: inline-block;
+
+}

@@ -144,7 +144,7 @@ function drawPlay() {
         xSpeed: 5,
         ySpeed: 3,
         move: function(){
-            if(this.inPlay == true) {
+            if(this.inPlay) {
                 //bounce off top and bottom
                 if((this.yPosition + 2*this.radius) >= (centerY + lawnHeight/2) || (this.yPosition - 2*this.radius) <= (centerY - lawnHeight/2)) {
                     this.ySpeed = -this.ySpeed;
@@ -200,6 +200,7 @@ function drawPlay() {
     function score(guy) {
         guy.score += 1;
         ball.inPlay = false;
+        updateScore();
         ball.reset();
     }
 
@@ -216,7 +217,6 @@ function drawPlay() {
     window.addEventListener('keydown', function(key){
         if(key.code == "Space") {
             (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
-            console.log(ball.inPlay);
         }
         if(key.code == "ArrowUp") {
             player.move("up");
