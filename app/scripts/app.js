@@ -89,8 +89,8 @@ function drawPlay() {
             }
         },
         //make this a function that increments score, gets ball ready to be re-served
-        score: 0
-
+        score: 0,
+        gamesWon: 0
     };          
 
     var ComputerPaddle = function(){
@@ -198,7 +198,19 @@ function drawPlay() {
 
     //handle end of round
     function score(guy) {
-        guy.score += 1;
+        if(guy.score <= 15){
+            guy.score += 15;
+        } else if(guy.score == 30) {
+            guy.score += 10;
+        } else if(guy.score == 40) {
+            guy.gamesWon += 1;
+            guy.score = 0;
+        }
+        if(guy.gamesWon == 3){
+            guy.score = "winner!";
+            console.log("GAME OVER");
+        }
+        
         ball.inPlay = false;
         updateScore();
         ball.reset();
@@ -210,6 +222,8 @@ function drawPlay() {
     var updateScore = function(){
         playerScore.innerHTML = player.score;
         compScore.innerHTML = computer.score;
+        playerGames.innerHTML = player.gamesWon;
+        compGames.innerHTML = computer.gamesWon;
     }
     
     animate(step);

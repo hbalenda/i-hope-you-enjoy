@@ -19,21 +19,18 @@ canvas {
     margin: 0 auto;
     position: relative;
     text-align:center;
+    padding-top: 20px;
 }
 .scoreBox {
     z-index: 1;
     color: #F3F3F5;
-    font-size: 56px;
-    padding: 5% 20%;
+    font-size: 48px;
     font-family: "Montserrat";
+    display: inline-block;
+    padding: 5% 0%;
 }
 
-#playerScore {
+#playerContainer {
+    padding: 10%;
     display: inline-block;
-
-}
-
-#compScore {
-    display: inline-block;
-
 }
