@@ -78,14 +78,23 @@ function drawPlay() {
         },
         speed: 25,
         move: function(direction){
+            //debugger;
             if(direction == "up") {
-                if((this.yPosition - this.speed) >= (centerY - lawnHeight/2 - this.height)){
-                    this.yPosition -= this.speed;
+                var newY = this.yPosition - this.speed;
+                
+                if (newY < (centerY - lawnHeight/2)) {
+                    newY = centerY - lawnHeight/2;
                 }
+                
+                this.yPosition = newY;
             } else if(direction == "down"){
-                if((this.yPosition + this.speed) <= (centerY + lawnWidth/2)){
-                this.yPosition += this.speed;
+                var newY = this.yPosition + this.speed;
+                
+                if (newY + this.height > centerY + lawnHeight/2) {
+                    newY = centerY + lawnHeight/2 - this.height;
                 }
+                
+                this.yPosition = newY;
             }
         },
         //make this a function that increments score, gets ball ready to be re-served
@@ -97,8 +106,8 @@ function drawPlay() {
         Paddle.call(this);
         this.xPosition = centerX - lawnWidth/2 + 10;
         this.update = function(){
-            var roll = Math.floor(Math.random() * 9) + 1;
-            if(roll !== 2) {
+            var roll = Math.floor(Math.random() * 7) + 1;
+            if(roll < 3) {
                 if(ball.inPlay){
                     if(ball.yPosition < (this.yPosition + this.height/2)){
                         this.move("up");
@@ -141,7 +150,7 @@ function drawPlay() {
             context.arc(this.xPosition, this.yPosition, this.radius, this.startAngle, this.endAngle);
             context.stroke();
         },
-        xSpeed: 5,
+        xSpeed: 4,
         ySpeed: 3,
         move: function(){
             if(this.inPlay) {
@@ -154,9 +163,9 @@ function drawPlay() {
                 } else if((this.xPosition - 2*this.radius) <= (centerX - lawnWidth/2)) {
                     score(player);
                 } //bounce off paddles
-                else if((player.xPosition == (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
+                else if((player.xPosition <= (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
                     this.xSpeed = -this.xSpeed;
-                } else if(((computer.xPosition + computer.width) == (this.xPosition - 2*this.radius)) && (computer.yPosition <= this.yPosition && this.yPosition <= (computer.yPosition + computer.height))){
+                } else if(((computer.xPosition + computer.width) >= (this.xPosition - 2*this.radius)) && (computer.yPosition <= this.yPosition && this.yPosition <= (computer.yPosition + computer.height))){
                     this.xSpeed = -this.xSpeed;
                 }
                 this.xPosition += this.xSpeed;
