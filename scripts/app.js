@@ -235,13 +235,18 @@ function drawPlay() {
     var playerScore = document.getElementById("playerScore");
     var compScore = document.getElementById("compScore");
     var updateScore = function(){
+        if(player.score > 0 || player.gamesWon > 0){
         playerScore.innerHTML = player.score;
+        } else if (computer.score > 0 || computer.gamesWon > 0){
         compScore.innerHTML = computer.score;
+        }
+        if (player.gamesWon > 0){
         playerGames.innerHTML = player.gamesWon;
+        } else if (computer.gamesWon > 0){
         compGames.innerHTML = computer.gamesWon;
+        }
     }
     
-    // animate(step);
     renderObjects(computer, player, ball);
 
     window.addEventListener('keydown', function(event){
