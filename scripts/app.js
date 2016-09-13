@@ -106,13 +106,13 @@ function drawPlay() {
         Paddle.call(this);
         this.xPosition = centerX - lawnWidth/2 + 10;
         this.update = function(){
-            var roll = Math.floor(Math.random() * 7) + 1;
-            if(roll < 3) {
+            var roll = Math.floor(Math.random() * 9) + 1;
+            if(roll < 8) {
                 if(ball.inPlay){
                     if(ball.yPosition < (this.yPosition + this.height/2)){
                         this.move("up");
                     } else if (ball.yPosition > (this.yPosition + this.height)){
-                        this.move("down");           
+                        this.move("down");    
                     }
                 }
             }
@@ -160,12 +160,14 @@ function drawPlay() {
                 } //stop if goes out of bounds
                 else if((this.xPosition + 2*this.radius) >= (centerX + lawnWidth/2)){
                     score(computer);   
+                    return;
                 } else if((this.xPosition - 2*this.radius) <= (centerX - lawnWidth/2)) {
                     score(player);
+                    return;
                 } //bounce off paddles
-                else if((player.xPosition <= (this.xPosition + 2*this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
+                else if((player.xPosition <= (this.xPosition + this.radius)) && (player.yPosition <= this.yPosition && this.yPosition <= (player.yPosition + player.height))){
                     this.xSpeed = -this.xSpeed;
-                } else if(((computer.xPosition + computer.width) >= (this.xPosition - 2*this.radius)) && (computer.yPosition <= this.yPosition && this.yPosition <= (computer.yPosition + computer.height))){
+                } else if(((computer.xPosition + computer.width) >= (this.xPosition - this.radius)) && (computer.yPosition <= this.yPosition && this.yPosition <= (computer.yPosition + computer.height))){
                     this.xSpeed = -this.xSpeed;
                 }
                 this.xPosition += this.xSpeed;
@@ -182,6 +184,7 @@ function drawPlay() {
     var computer = new ComputerPaddle();
     var player = new PlayerPaddle();
     var ball = new Ball();
+    var gameIsPlaying = false;
 
     var renderObjects = function() {
         for (var i = 0; i < arguments.length; i++){
@@ -194,7 +197,7 @@ function drawPlay() {
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
         window.msRequestAnimationFrame     ||
-        function(callback) { window.setTimeout(callback, 1000/60) 
+        function(callback) { window.setTimeout(callback, 1000/60) ;
         };
 
     var step = function() {
@@ -202,11 +205,15 @@ function drawPlay() {
         ball.move();
         computer.update();
         renderObjects(computer, player, ball);
-        animate(step);
+        
+        if (gameIsPlaying) {
+            animate(step);
+        }
     };
 
     //handle end of round
     function score(guy) {
+        gameIsPlaying = false;        
         if(guy.score <= 15){
             guy.score += 15;
         } else if(guy.score == 30) {
@@ -234,23 +241,30 @@ function drawPlay() {
         compGames.innerHTML = computer.gamesWon;
     }
     
-    animate(step);
+    // animate(step);
+    renderObjects(computer, player, ball);
 
-    window.addEventListener('keydown', function(key){
-        if(key.code == "Space") {
+    window.addEventListener('keydown', function(event){
+        var code = event.which || event.keyCode;
+        if(code == 32) {
             if(player.gamesWon == 3 || computer.gamesWon == 3){
                 location.reload();
             } else {
-                (ball.inPlay) ? ball.inPlay = false : ball.inPlay = true;
+                gameIsPlaying = !gameIsPlaying;
+                ball.inPlay = !ball.inPlay;
+                
+                if (gameIsPlaying) {
+                    animate(step);
+                }
             }
         }
-        if(key.code == "ArrowUp") {
+        if(code == 38) {
             player.move("up");
-        } else if(key.code == "ArrowDown") {
+        } else if(code == 40) {
             player.move("down");
         }
     });
 };
 
-window.addEventListener('load', drawPlay(), false);
+window.addEventListener('load', drawPlay, false);
 window.addEventListener('load', drawLawn(lawnWidth, lawnHeight), false);
