@@ -106,14 +106,16 @@ function drawPlay() {
         Paddle.call(this);
         this.xPosition = centerX - lawnWidth/2 + 10;
         this.update = function(){
-            var roll = Math.floor(Math.random() * 9) + 1;
-            if(roll < 8) {
-                if(ball.inPlay){
+            var roll = Math.floor(Math.random() * 30) + 1;
+            if(ball.inPlay){
+                if(roll < 25) {
                     if(ball.yPosition < (this.yPosition + this.height/2)){
                         this.move("up");
                     } else if (ball.yPosition > (this.yPosition + this.height)){
                         this.move("down");    
-                    }
+                    }  
+                } else if (roll <= 30) {
+                    this.speed = 4;
                 }
             }
         };
