@@ -20,7 +20,7 @@ canvas {
     position: relative;
     text-align:center;
 }
-.scoreBox {
+.scoreBox, #yourScreenIsTooSmall {
     z-index: 1;
     color: #F3F3F5;
     font-size: 48px;
