@@ -26,7 +26,7 @@ canvas{
     font-size: 48px;
     font-family: "Montserrat";
     display: inline-block;
-    padding: 0px 20px;
+    padding: 5px 20px;
 }
 
 @keyframes blink {
@@ -40,13 +40,16 @@ canvas{
   }
 }
 
-#yourScreenIsTooSmall {
+#msgContainer {
     z-index: 1;
     color: #F3F3F5;
     font-size: 48px;
     font-family: "Montserrat";
     margin: 0 auto;
     width: 100%;
+    top: 40%;
+    height: 100px;
+    position: absolute;
     text-align: center;
     animation: blink 1s step-start 2s infinite;
     -webkit-animation: blink 1s step-start 0s infinite;

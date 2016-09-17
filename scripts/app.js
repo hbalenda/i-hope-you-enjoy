@@ -38,8 +38,8 @@ function drawPlay() {
         lawnCtx.stroke();  
         //draw midlines
         lawnCtx.beginPath();
-        lawnCtx.moveTo(centerX, centerY - h/2 - 50);
-        lawnCtx.lineTo(centerX, centerY + h/2 + 50);
+        lawnCtx.moveTo(centerX, centerY - h/2 - 40);
+        lawnCtx.lineTo(centerX, centerY + h/2 + 40);
         lawnCtx.lineWidth="7";
         lawnCtx.stroke(); 
 
@@ -273,8 +273,8 @@ function drawPlay() {
 };
 
 var resize = function(){
-    var msgContainer = document.getElementById("yourScreenIsTooSmall");
-    if(window.innerWidth > 1050){
+    var msgContainer = document.getElementById("msgContainer");
+    if(window.innerWidth > 1050 && window.innerHeight > 500){
         msgContainer.style.display = "none";
         location.reload();
     } else {
@@ -287,7 +287,7 @@ var resize = function(){
     }
 }
 var introMsg = function(){
-    var msgContainer = document.getElementById("yourScreenIsTooSmall");
+    var msgContainer = document.getElementById("msgContainer");
     msgContainer.innerHTML = "space bar";
     msgContainer.style.display = "inline-block";
     drawPlay();
