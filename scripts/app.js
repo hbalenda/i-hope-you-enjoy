@@ -161,7 +161,6 @@ function drawPlay() {
                     this.ySpeed = -this.ySpeed;
                 } //stop if goes out of bounds
                 else if((this.xPosition + 2*this.radius) >= (centerX + lawnWidth/2)){
-//                        console.log("this.xPosition="+ this.xPosition + " + " + "2*this.radius=" +  2*this.radius + " >= (centerX + lawnWidth/2)= " + (centerX + lawnWidth/2));
                     console.log("centerX=" + centerX + " - " + "lawnWidth/2=" + lawnWidth/2);
                     score(computer);   
                     return;
@@ -287,5 +286,17 @@ var resize = function(){
         msgContainer.innerHTML = "window tooooo small";
     }
 }
-window.addEventListener("load", drawPlay);
+var introMsg = function(){
+    var msgContainer = document.getElementById("yourScreenIsTooSmall");
+    msgContainer.innerHTML = "space bar";
+    msgContainer.style.display = "inline-block";
+    drawPlay();
+    window.addEventListener('keydown', function(event){
+    var code = event.which || event.keyCode;
+        if(code == 32) {
+            msgContainer.style.display = "none";
+        }
+    });
+}
 window.addEventListener("resize", resize);
+window.addEventListener("load", introMsg);
